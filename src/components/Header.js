@@ -1,9 +1,15 @@
+import { Link } from 'react-router-dom';
 import logo from '../images/logo.svg';
 
-function Header() {
+
+function Header(props) {
     return (
       <header className="header">
         <img src={logo} alt="Логотип" className="header__logo"/>
+        <div className="header__link-container">
+          {props.name ? <p className='header__name'>{props.name}</p> : ''}
+          <Link className={props.changeColor ? 'header__link_change_color' : "header__link"} to={props.linkPath}>{props.linkName}</Link>
+        </div>
       </header>
     )
 }

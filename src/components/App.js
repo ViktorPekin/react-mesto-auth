@@ -1,6 +1,5 @@
 import {useEffect, useState } from 'react';
-import { Route, Switch, Redirect } from "react-router-dom";
-import Header from './Header';
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import Main from './Main';
 import Login from './Login';
 import EditProfilePopup from './EditProfilePopup';
@@ -8,11 +7,11 @@ import EditAvatarPopup from './EditAvatarPopup';
 import ConfirmDeliteCardPopup from './ConfirmDeliteCardPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ImagePopup from './ImagePopup';
+import Register from './Register';
+import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
-import {api} from '../utils/api'
+import {api} from '../utils/api';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
-import Registration from './Registration';
-
 
 function App() {
   const [selectedCard, setSelectedCard] = useState({});
@@ -20,10 +19,13 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [isConfirmDeliteCardPopup, setConfirmDeliteCardPopup] = useState(false);
+  const [isInfoTooltipPopup, setisInfoTooltipPopup] = useState(false);
+  const [isInfoTooltiCondition, setIsInfoTooltiCondition] = useState(true);
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [actualDeleteCard, setActualDeleteCard] = useState({});
-  const [loggedIn, setloggedIn] = useState(false);
+  const [loggedIn, setloggedIn] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     api.getInitialCard().then((res) => {
@@ -67,6 +69,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setConfirmDeliteCardPopup(false);
     setSelectedCard({});
+    setisInfoTooltipPopup(false);
   }
 
   function handleUpdateUser(value) {
@@ -96,40 +99,64 @@ function App() {
     });
   }
 
+  function handleRegistrationUser(value) {
+    api.registrationUser(value).then((res) => {
+      if (res) {
+        navigate('/sign-in');
+        setIsInfoTooltiCondition(true);
+        setisInfoTooltipPopup(true);
+      } else {
+        setIsInfoTooltiCondition(false);
+        setisInfoTooltipPopup(true);
+      }
+    }).catch((err) => {
+      console.log(err);
+      setIsInfoTooltiCondition(false);
+      setisInfoTooltipPopup(true);
+    });
+  }
+
   return (
     <div className="page">
       <div className="page__container">
-        <Switch>
-          <CurrentUserContext.Provider value={currentUser}>
-            <Header />
-            <ProtectedRoute
-              path="/"
-              loggedIn={loggedIn}
-              component={Main}
-              cards={cards}
-              onCardLike={handleCardLike}
-              onCardDelete={handleCardDelete}
-              onEditProfile={setIsEditProfilePopupOpen}
-              onAddPlace={setIsAddPlacePopupOpen}
-              onEditAvatar={setIsEditAvatarPopupOpen}
-              onCardClick={setSelectedCard}
-            />
-            <Route path="/sign-in">
+        <CurrentUserContext.Provider value={currentUser}>
+          <Routes>
+            <Route path="/" element={
+              <ProtectedRoute
+                exact path="/"
+                loggedIn={loggedIn}
+              >
+                <Main
+                loggedIn={loggedIn}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleCardDelete}
+                onEditProfile={setIsEditProfilePopupOpen}
+                onAddPlace={setIsAddPlacePopupOpen}
+                onEditAvatar={setIsEditAvatarPopupOpen}
+                onCardClick={setSelectedCard}/>
+              </ProtectedRoute>
+            }/>
+            <Route path="/sign-in" element={
               <Login title={'Вход'} button={'Войти'}/>
-            </Route>
-            <Route path="/sign-up">
-              <Registration title={'Регистрация'} button={'Зарегистрироваться'}/>
-            </Route>
-            <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}/>
-            <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}/>
-            <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
-            <ConfirmDeliteCardPopup onCardDelete={openConfirmPopup} isOpen={isConfirmDeliteCardPopup} onClose={closeAllPopups}/>
-            <ImagePopup
-              onClose={closeAllPopups}
-              card={selectedCard}
-            />
-          </CurrentUserContext.Provider>
-        </Switch>
+            }/>
+            <Route path="/sign-up" element={
+              <Register title={'Регистрация'} button={'Зарегистрироваться'} onRegistration={handleRegistrationUser}/>
+            }/>
+            <Route path="*" element={
+              loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
+            }/>
+          </Routes>
+          <EditProfilePopup onUpdateUser={handleUpdateUser} isOpen={isEditProfilePopupOpen} onClose={closeAllPopups}/>
+          <AddPlacePopup onAddPlace={handleAddPlaceSubmit} isOpen={isAddPlacePopupOpen} onClose={closeAllPopups}/>
+          <EditAvatarPopup onUpdateAvatar={handleUpdateAvatar} isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} />
+          <ConfirmDeliteCardPopup onCardDelete={openConfirmPopup} isOpen={isConfirmDeliteCardPopup} onClose={closeAllPopups}/>
+          <InfoTooltip onCondition={isInfoTooltiCondition} isOpen={isInfoTooltipPopup} onClose={closeAllPopups}/>
+          <ImagePopup
+            onClose={closeAllPopups}
+            card={selectedCard}
+          />
+        </CurrentUserContext.Provider>
       </div>
     </div>
   );

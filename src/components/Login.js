@@ -1,5 +1,9 @@
+import Header from './Header';
+
 function Login(props) {
   return(
+    <>
+    <Header linkPath={"/sign-up"} linkName={"Регистрация"}/>
     <div className="login-registration">
       <h2 className="login-registration__title">{props.title}</h2>
       <form className="login-registration__form">
@@ -8,7 +12,9 @@ function Login(props) {
         <button className="login-registration__button">{props.button}</button>
       </form>
     </div>
+    </>
   )
 }
 
 export default Login;
+
