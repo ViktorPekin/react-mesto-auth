@@ -36,6 +36,7 @@
 @import url(./blocks/login-registration/__email/login-registration__email.css);
 @import url(./blocks/login-registration/__password/login-registration__password.css);
 @import url(./blocks/login-registration/__button/login-registration__button.css);
+@import url(./blocks/login-registration/__link/login-registration__link.css);
 @import url(./blocks/footer/footer.css);
 @import url(./blocks/footer/__copiright/footer__copiright.css);
 @import url(./blocks/popup/popup.css);

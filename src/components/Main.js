@@ -9,7 +9,7 @@ function Main(props) {
 
   return (
     <>
-      <Header linkPath={"/sign-up"} linkName={"Выйти"} name="123@y.ru" changeColor="true"/>
+      <Header onSignOut={props.onSignOut} linkPath={'/sign-in'} linkName="Выйти" email={props.email} changeColor="true"/>
       <main className="content">
         <section className="profile">
           <div className="profile__info">

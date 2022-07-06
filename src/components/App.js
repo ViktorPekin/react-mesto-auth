@@ -24,10 +24,12 @@ function App() {
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [actualDeleteCard, setActualDeleteCard] = useState({});
-  const [loggedIn, setloggedIn] = useState(true);
+  const [loggedIn, setloggedIn] = useState(false);
+  const [emailUser, setEmailUser] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
+    handleTokenCheck();
     api.getInitialCard().then((res) => {
       setCards(res);
     }).catch((err) => {
@@ -116,6 +118,38 @@ function App() {
     });
   }
 
+  function handleLoginUser(value) {
+    api.authUser(value).then((res) => {
+      if (res.token) {
+        localStorage.setItem('token', res.token);
+        handleTokenCheck();
+        setloggedIn(true);
+        navigate('/');
+      }
+    }).catch((err) => {
+      console.log(err);
+      setIsInfoTooltiCondition(false);
+      setisInfoTooltipPopup(true);
+    });
+  }
+
+  function handleTokenCheck(){
+    if (localStorage.getItem('token')){
+    const jwt = localStorage.getItem('token');
+    api.checkedToken(jwt).then((res) => {
+      setloggedIn(true);
+      navigate('/');
+      setEmailUser(res.data.email);
+    }).catch((err) => {
+    console.log(err);
+    });
+    }
+  }
+
+  function signOut(){
+    localStorage.removeItem('token');
+  }
+
   return (
     <div className="page">
       <div className="page__container">
@@ -129,6 +163,8 @@ function App() {
                 <Main
                 loggedIn={loggedIn}
                 cards={cards}
+                email={emailUser}
+                onSignOut={signOut}
                 onCardLike={handleCardLike}
                 onCardDelete={handleCardDelete}
                 onEditProfile={setIsEditProfilePopupOpen}
@@ -138,7 +174,7 @@ function App() {
               </ProtectedRoute>
             }/>
             <Route path="/sign-in" element={
-              <Login title={'Вход'} button={'Войти'}/>
+              <Login title={'Вход'} button={'Войти'} onLogin={handleLoginUser}/>
             }/>
             <Route path="/sign-up" element={
               <Register title={'Регистрация'} button={'Зарегистрироваться'} onRegistration={handleRegistrationUser}/>

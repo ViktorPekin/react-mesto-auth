@@ -96,8 +96,10 @@ class Api {
   checkedToken(jwt) {
     return fetch(`${this._authBaseUrl}/users/me`, {
       method: 'GET',
-      headers: this._authHeader,
-      "Authorization" : `Bearer ${jwt}`
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization" : `Bearer ${jwt}`
+    }
     }).then(this._checkResponse);
   }
 }

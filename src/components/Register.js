@@ -1,5 +1,6 @@
 import Header from "./Header";
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Register(props) {
   const [password, setPassword] = useState('');
@@ -34,6 +35,7 @@ function Register(props) {
         onChange={handlePassword} placeholder="Пароль">
          </input>
         <button className="login-registration__button">{props.button}</button>
+        <Link className="login-registration__link" to="/sign-in">Уже зарегистрированы? Войти</Link>
       </form>
     </div>
     </>
