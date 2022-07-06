@@ -13,9 +13,6 @@ function ConfirmDeliteCardPopup(props) {
       name={'delete-card'}
       title={'Вы уверены'}
       buttonText={'Да'}
-      children={
-        <div></div>
-      }
     />
   )
 }

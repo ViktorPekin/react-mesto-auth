@@ -11,6 +11,7 @@ import Register from './Register';
 import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
 import {api} from '../utils/api';
+import {auth} from '../utils/auth';
 import {CurrentUserContext} from '../contexts/CurrentUserContext';
 
 function App() {
@@ -27,6 +28,22 @@ function App() {
   const [loggedIn, setloggedIn] = useState(false);
   const [emailUser, setEmailUser] = useState('');
   const navigate = useNavigate();
+  const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen ||
+  isAddPlacePopupOpen || isConfirmDeliteCardPopup || isInfoTooltipPopup;
+
+  useEffect(() => {
+    function closeByEscape(evt) {
+      if(evt.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    if(isOpen) {
+      document.addEventListener('keydown', closeByEscape);
+      return () => {
+        document.removeEventListener('keydown', closeByEscape);
+      };
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     handleTokenCheck();
@@ -102,24 +119,23 @@ function App() {
   }
 
   function handleRegistrationUser(value) {
-    api.registrationUser(value).then((res) => {
+    auth.registrationUser(value).then((res) => {
       if (res) {
         navigate('/sign-in');
         setIsInfoTooltiCondition(true);
-        setisInfoTooltipPopup(true);
       } else {
         setIsInfoTooltiCondition(false);
-        setisInfoTooltipPopup(true);
       }
     }).catch((err) => {
       console.log(err);
       setIsInfoTooltiCondition(false);
+    }).finally(() => {
       setisInfoTooltipPopup(true);
     });
   }
 
   function handleLoginUser(value) {
-    api.authUser(value).then((res) => {
+    auth.authUser(value).then((res) => {
       if (res.token) {
         localStorage.setItem('token', res.token);
         handleTokenCheck();
@@ -136,7 +152,7 @@ function App() {
   function handleTokenCheck(){
     if (localStorage.getItem('token')){
     const jwt = localStorage.getItem('token');
-    api.checkedToken(jwt).then((res) => {
+    auth.checkedToken(jwt).then((res) => {
       setloggedIn(true);
       navigate('/');
       setEmailUser(res.data.email);

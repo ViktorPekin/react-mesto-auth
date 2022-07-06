@@ -1,9 +1,15 @@
 import { useState } from 'react';
+import React from 'react';
 import Header from './Header';
 
 function Login(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+
+  React.useEffect(() => {
+    setPassword('');
+    setEmail('');
+  }, []);
 
   function handlePassword(e) {
     setPassword(e.target.value);
@@ -19,8 +25,6 @@ function Login(props) {
       password,
       email
     });
-    setPassword('');
-    setEmail('');
   }
 
   return(
