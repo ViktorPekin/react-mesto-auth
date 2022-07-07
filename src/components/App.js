@@ -29,7 +29,7 @@ function App() {
   const [emailUser, setEmailUser] = useState('');
   const navigate = useNavigate();
   const isOpen = isEditAvatarPopupOpen || isEditProfilePopupOpen ||
-  isAddPlacePopupOpen || isConfirmDeliteCardPopup || isInfoTooltipPopup;
+  isAddPlacePopupOpen || isConfirmDeliteCardPopup || isInfoTooltipPopup || selectedCard.link;
 
   useEffect(() => {
     function closeByEscape(evt) {
@@ -37,10 +37,17 @@ function App() {
         closeAllPopups();
       }
     }
+    function closeOnOverlay(evt) {
+      if(evt.target.classList.contains('popup')) {
+        closeAllPopups();
+      }
+    }
     if(isOpen) {
       document.addEventListener('keydown', closeByEscape);
+      document.addEventListener('mousedown', closeOnOverlay);
       return () => {
         document.removeEventListener('keydown', closeByEscape);
+        document.addEventListener('mousedown', closeOnOverlay);
       };
     }
   }, [isOpen]);

@@ -2,18 +2,6 @@ import {useEffect} from 'react';
 
 function PopupWithForm(props) {
 
-    useEffect(() => {
-      function closeOnDelite(evt) {
-        if(evt.target.classList.contains('popup')) {
-          props.onClose();
-        }
-      }
-      document.addEventListener('mousedown', closeOnDelite);
-      return () => {
-        document.removeEventListener('keydown', closeOnDelite);
-      };
-  },[]);
-
   return(
     <section className={`popup popup-${props.name} ${props.isOpen ? 'popup_opened' : ''}`}>
       <div className={`popup-${props.name}__container`}>
