@@ -47,7 +47,7 @@ function App() {
       document.addEventListener('mousedown', closeOnOverlay);
       return () => {
         document.removeEventListener('keydown', closeByEscape);
-        document.addEventListener('mousedown', closeOnOverlay);
+        document.removeEventListener('mousedown', closeOnOverlay);
       };
     }
   }, [isOpen]);
