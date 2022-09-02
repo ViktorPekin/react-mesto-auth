@@ -1,15 +1,14 @@
 # Проект: Место
 
-### Обзор
+## Описание
+Фотогалерея с возможностью регистрации, авторизации, добавлять фотографии, редактировать профиль, открывать фото. Проект подключен к внешнему API.
+Данный проект сделан на React.
 
-* Технологии
-* GitHub Pages
-
-**Технологии**
+## Технологии
 
 Html / Css / БЭМ / БЭМ Nested / Адаптивная верска / JavaScript / ООП / Webpack /
 Работа с API / React
 
-**GitHub Pages**
+## GitHub Pages
 
-https://viktorpekin.github.io/mesto-react/
+https://viktorpekin.github.io/react-mesto-auth/
