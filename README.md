@@ -9,6 +9,9 @@
 Html / Css / БЭМ / БЭМ Nested / Адаптивная верска / JavaScript / ООП / Webpack /
 Работа с API / React
 
+## Запуск проекта
+npm run start
+
 ## GitHub Pages
 
 https://viktorpekin.github.io/react-mesto-auth/
